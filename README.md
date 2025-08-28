@@ -20,7 +20,10 @@ Run Segment Anything Model 2 on a **live video stream**
 ### Installation
 
 ```bash
-pip install -e .
+pip install uv
+uv sync
+
+uv run demo/demo.py
 ```
 ### Download Checkpoint
 
