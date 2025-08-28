@@ -20,13 +20,13 @@ import time
 from sam2.build_sam import build_sam2_camera_predictor
 
 
-sam2_checkpoint = "../checkpoints/sam2.1_hiera_small.pt"
-model_cfg = "configs/sam2.1/sam2.1_hiera_s.yaml"
+sam2_checkpoint = "checkpoints/sam2.1_hiera_tiny.pt"
+model_cfg = "../sam2/configs/sam2.1/sam2.1_hiera_t_512.yaml"
 
-predictor = build_sam2_camera_predictor(model_cfg, sam2_checkpoint)
+predictor = build_sam2_camera_predictor(model_cfg, sam2_checkpoint, vos_optimized=True)
 
 
-cap = cv2.VideoCapture("../notebooks/videos/aquarium/aquarium.mp4")
+cap = cv2.VideoCapture("notebooks/videos/aquarium/aquarium.mp4")
 
 if_init = False
 tracking_i = 0
@@ -35,7 +35,8 @@ while True:
     ret, frame = cap.read()
     if not ret:
         break
-
+    
+    start_time = time.time()
     frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
     width, height = frame.shape[:2][::-1]
@@ -120,6 +121,9 @@ while True:
         all_mask = cv2.cvtColor(all_mask, cv2.COLOR_HSV2RGB)
         frame = cv2.addWeighted(frame, 1, all_mask, 0.5, 0)
     frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    
+    end_time = time.time()
+    print("time:", end_time - start_time)
     cv2.imshow("frame", frame)
 
     if cv2.waitKey(1) & 0xFF == ord("q"):
